@@ -1,0 +1,8 @@
+# Download and install the InfluxDB, please note that the CLI is a separate package for clients, separated from InfluxDB OSS
+# The instruction recommended InfluxDB OSS version 2.7 and Grafana v9.5.3
+
+# InfluxDB OSS version 2.7
+# https://docs.influxdata.com/influxdb/v2/install/
+
+# Client package downlaod
+# https://docs.influxdata.com/influxdb/v2/reference/cli/influx/
