@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>InfluxDB Query Builder</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #palette, #builder { float: left; padding: 10px; border: 1px solid #ccc; min-height: 200px; }
+        #palette { width: 150px; margin-right: 20px; }
+        #builder { width: 600px; }
+        .item { margin: 5px; padding: 5px; background-color: #eef; cursor: move; }
+        .builder-block { margin: 5px 0; padding: 5px; border: 1px dashed #888; background: #f9f9f9; }
+        #controls { clear: both; margin-top: 220px; }
+        #flux-code { white-space: pre-wrap; background: #f0f0f0; padding: 10px; margin-top: 10px; height: 160px; overflow:auto; }
+        #chart-container { margin-top: 20px; }
+        #login { margin-bottom: 10px; padding: 8px; border: 1px solid #ccc; width: 800px; }
+    </style>
+</head>
+<body>
+    <h2>InfluxDB 无代码查询（开发版）</h2>
+
+    <div id="login">
+        <label>Influx Token (用于登录)： <input type="password" id="influx-token" size="60"></label>
+        <button id="login-btn">登录</button>
+        <span id="login-status"></span>
+        <div style="margin-top:6px; font-size:12px; color:#555;">
+            如果你在后端开启 DEV_MODE 并配置 DEV_INFLUX_TOKEN，可不登录直接测试。
+        </div>
+    </div>
+
+    <div id="palette">
+        <div id="bucket" class="item" draggable="true" ondragstart="drag(event)">Bucket</div>
+        <div id="measurement" class="item" draggable="true" ondragstart="drag(event)">Measurement</div>
+        <div id="field" class="item" draggable="true" ondragstart="drag(event)">Field</div>
+        <div id="timerange" class="item" draggable="true" ondragstart="drag(event)">Time Range</div>
+        <div id="filter" class="item" draggable="true" ondragstart="drag(event)">Filter</div>
+    </div>
+
+    <div id="builder" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <!-- 动态生成的控件会插入到此处 -->
+    </div>
+
+    <div id="controls">
+        <button onclick="runQuery()">运行查询</button>
+    </div>
+
+    <h3>生成的 Flux 查询语句：</h3>
+    <pre id="flux-code"></pre>
+
+    <div id="chart-container">
+        <canvas id="chart" width="900" height="300"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/script.js"></script>
+</body>
+</html>
