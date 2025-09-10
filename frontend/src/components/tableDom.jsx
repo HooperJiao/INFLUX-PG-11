@@ -1,0 +1,47 @@
+import { downloadExcel, downloadCSV, downloadTXT } from '../api/influxdbAPI'
+
+export const TableDom = ({ data, sql }) => {
+  const cols = ['_measurement', '_field', '_value', '_start', '_stop', '_time']
+  return (
+    <>
+      <div className="flex flex-col space-y-4 p-0 m-0 rounded-xl">
+        <div className="flex space-x-2">
+          <button onClick={() => downloadExcel(sql)}>Download Excel</button>
+
+          <button onClick={() => downloadCSV(sql)}>Download CSV</button>
+
+          <button onClick={() => downloadTXT(sql)}>Download TXT</button>
+        </div>
+
+        <table className="">
+          <thead>
+            {cols.map((col, i) => (
+              <th
+                className="rounded-t-xl border border-gray-500 p-2"
+                key={`col-${i}`}
+              >
+                {col}
+              </th>
+            ))}
+          </thead>
+          <tbody>
+            {data.map((row, rowi) => {
+              return (
+                <tr key={`row-${rowi}`}>
+                  {cols.map((col, coli) => (
+                    <td
+                      className="border border-gray-500 p-2"
+                      key={`row-${rowi}-${coli}`}
+                    >
+                      {row[col]}
+                    </td>
+                  ))}
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </>
+  )
+}
