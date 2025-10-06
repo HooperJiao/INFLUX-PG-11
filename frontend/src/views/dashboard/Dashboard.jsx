@@ -19,6 +19,7 @@ import useFields from './fieldsDom'
 import useGraph from './GraphDom'
 
 import History from './History'
+import SQLTexture from './SQLTexture'
 
 function Dashboard() {
   const [error, setError] = useState('')
@@ -74,11 +75,6 @@ function Dashboard() {
       _time: '',
     },
   ])
-
-  useEffect(() => {
-    console.log('update buckets dom...')
-    if (influxToken && influxOrg) fetchBuckets(setError)
-  }, [influxToken, influxOrg])
 
   useEffect(() => {
     if (buckets.length > 0) {
@@ -282,10 +278,22 @@ function Dashboard() {
 
   const tabData = [
     { title: 'SQL', content: sqlTextare },
-    { title: 'Graph', content: graphDom },
     { title: 'Table', content: dataTable },
-    { title: 'Saved List', content: <History /> },
+    // { title: 'Graph', content: graphDom },
+    // { title: 'Saved List', content: <History /> },
   ]
+
+  function handleQuery() {
+    console.log('start query...')
+    doQuery(sql, setTableData, setError)
+    // fetchGraph({
+    //   sql,
+    //   _startTime: startTime,
+    //   _endTime: endTime,
+    //   _limit: limit,
+    //   setError: setError,
+    // })
+  }
 
   return (
     <>
@@ -334,11 +342,9 @@ function Dashboard() {
                 <button
                   onClick={() => {
                     console.log('updating token and org...')
-                    setInfluxToken('')
-                    setInfluxOrg('')
-
                     setInfluxToken(inputInfluxToken)
                     setInfluxOrg(inputInfluxOrg)
+                    fetchBuckets(setError)
                   }}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition duration-200 whitespace-nowrap"
                 >
@@ -449,11 +455,28 @@ function Dashboard() {
                     />
                   </div>
                 </div>
-                <button className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-md transition duration-200 font-medium text-lg whitespace-nowrap">
+                <button
+                  className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-md transition duration-200 font-medium text-lg whitespace-nowrap"
+                  onClick={handleQuery}
+                >
                   Submit
                 </button>
               </div>
             </div>
+
+            {/* Show the SQL Results */}
+            <SQLTexture
+              selectFields={selectFields}
+              filterFields={filterFields}
+              startTime={startTime}
+              endTime={endTime}
+              limit={limit}
+            />
+            {/* Show the SQL Results */}
+
+            {/* Show Table: */}
+            <TableDom data={tableData} sql={sql} />
+            {/* Show Table: */}
           </div>
         </DndProvider>
       </div>

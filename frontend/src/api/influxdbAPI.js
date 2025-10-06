@@ -1,10 +1,37 @@
 import axios from 'axios'
-import { flushSync } from 'react-dom'
+
+/**
+ * 1. Read all data from local storage
+ * 2. Check if all data exists in local storage
+ * 3. If not exists, return false
+ * 4. If all exists, return true
+ *
+ */
+const allExists = (checkList) => {
+  for (const item of checkList) {
+    if (!localStorage.getItem(item)) {
+      return false
+    }
+  }
+  return true
+}
 
 const fetchBuckets = (setBuckets, setError) => {
+  if (!allExists(['token', 'user', 'influx_token', 'influx_org'])) {
+    setError('InfluxDB headers are not set.')
+    return
+  }
+
   console.log('start fetching buckets...', axios.defaults.headers)
   axios
-    .get('/api/influx/bucket', {})
+    .get('/api/influx/bucket', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        User: localStorage.getItem('user'),
+        InfluxToken: localStorage.getItem('influx_token'),
+        InfluxOrg: localStorage.getItem('influx_org'),
+      },
+    })
     .then((result) => {
       const data = result.data
       console.log('fetch buckets result:', result, data)
@@ -17,7 +44,11 @@ const fetchBuckets = (setBuckets, setError) => {
 }
 
 const fetchMeasurements = (bucket, setMeasurements, setError) => {
-  console.log('start fetching buckets...')
+  console.log('start fetching measurements...')
+  if (!allExists(['token', 'user', 'influx_token', 'influx_org'])) {
+    setError('InfluxDB headers are not set.')
+    return
+  }
 
   if (bucket === '') {
     setError('bucket is null')
@@ -25,7 +56,14 @@ const fetchMeasurements = (bucket, setMeasurements, setError) => {
   }
 
   axios
-    .get(`/api/influx/measurement?bucket=${bucket}`, {})
+    .get(`/api/influx/measurement?bucket=${bucket}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        User: localStorage.getItem('user'),
+        InfluxToken: localStorage.getItem('influx_token'),
+        InfluxOrg: localStorage.getItem('influx_org'),
+      },
+    })
     .then((result) => {
       const data = result.data
       console.log('fetch measurements result:', result, data)
@@ -39,6 +77,10 @@ const fetchMeasurements = (bucket, setMeasurements, setError) => {
 
 const fetchFields = (bucket, measurement, setFields, setError) => {
   console.log('start fetching fields...')
+  if (!allExists(['token', 'user', 'influx_token', 'influx_org'])) {
+    setError('InfluxDB headers are not set.')
+    return
+  }
 
   if (bucket === '') {
     setError('bucket is null')
@@ -51,7 +93,14 @@ const fetchFields = (bucket, measurement, setFields, setError) => {
   }
 
   axios
-    .get(`/api/influx/field?bucket=${bucket}&measurement=${measurement}`, {})
+    .get(`/api/influx/field?bucket=${bucket}&measurement=${measurement}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        User: localStorage.getItem('user'),
+        InfluxToken: localStorage.getItem('influx_token'),
+        InfluxOrg: localStorage.getItem('influx_org'),
+      },
+    })
     .then((result) => {
       const data = result.data
       console.log('fetch fields result:', result, data)
@@ -68,6 +117,11 @@ const fetchFields = (bucket, measurement, setFields, setError) => {
 }
 
 const doQuery = (query, setData, setError) => {
+  if (!allExists(['token', 'user', 'influx_token', 'influx_org'])) {
+    setError('InfluxDB headers are not set.')
+    return
+  }
+
   if (query == '') {
     setError('no query.')
     return
@@ -79,7 +133,14 @@ const doQuery = (query, setData, setError) => {
   // }
 
   axios
-    .get(`/api/influx/query?sql=${query}`, {})
+    .get(`/api/influx/query?sql=${query}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        User: localStorage.getItem('user'),
+        InfluxToken: localStorage.getItem('influx_token'),
+        InfluxOrg: localStorage.getItem('influx_org'),
+      },
+    })
     .then((result) => {
       const data = result.data
       console.log('fetch fields result:', result, data)
@@ -96,6 +157,10 @@ const queryGraph = (query, graphType, setData, setError) => {
     setError('no query.')
     return
   }
+  if (!allExists(['token', 'user', 'influx_token', 'influx_org'])) {
+    setError('InfluxDB headers are not set.')
+    return
+  }
 
   // if (query.indexOf('limit') == -1) {
   //   setError('no limit.')
@@ -103,7 +168,14 @@ const queryGraph = (query, graphType, setData, setError) => {
   // }
 
   axios
-    .get(`/api/influx/query/graph?sql=${query}&graph_type=${graphType}`, {})
+    .get(`/api/influx/query/graph?sql=${query}&graph_type=${graphType}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        User: localStorage.getItem('user'),
+        InfluxToken: localStorage.getItem('influx_token'),
+        InfluxOrg: localStorage.getItem('influx_org'),
+      },
+    })
     .then((result) => {
       const data = result.data
       console.log('query result:', result, data)
@@ -117,8 +189,19 @@ const queryGraph = (query, graphType, setData, setError) => {
 
 const fetchGraphs = (setGraphs, setError) => {
   console.log('start fetching dashboards...')
+  if (!allExists(['token', 'user', 'influx_token', 'influx_org'])) {
+    setError('InfluxDB headers are not set.')
+    return
+  }
   axios
-    .get('/api/influx/graph', {})
+    .get('/api/influx/graph', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        User: localStorage.getItem('user'),
+        InfluxToken: localStorage.getItem('influx_token'),
+        InfluxOrg: localStorage.getItem('influx_org'),
+      },
+    })
     .then((result) => {
       const data = result.data
       console.log('fetch graphs result:', result, data)
@@ -132,9 +215,19 @@ const fetchGraphs = (setGraphs, setError) => {
 
 const createGraph = (graph, setError) => {
   console.log('start create graph ...', graph)
-
+  if (!allExists(['token', 'user', 'influx_token', 'influx_org'])) {
+    setError('InfluxDB headers are not set.')
+    return
+  }
   axios
-    .post(`/api/influx/graph`, graph)
+    .post(`/api/influx/graph`, graph, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        User: localStorage.getItem('user'),
+        InfluxToken: localStorage.getItem('influx_token'),
+        InfluxOrg: localStorage.getItem('influx_org'),
+      },
+    })
     .then((result) => {
       const data = result.data
       console.log('create graph result:', result, data)
@@ -148,9 +241,19 @@ const createGraph = (graph, setError) => {
 
 const deleteGraph = (id, setGraphs, setError) => {
   console.log('start delete graph...')
-
+  if (!allExists(['token', 'user', 'influx_token', 'influx_org'])) {
+    setError('InfluxDB headers are not set.')
+    return
+  }
   axios
-    .delete(`/api/influx/graph?id=${id}`)
+    .delete(`/api/influx/graph?id=${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        User: localStorage.getItem('user'),
+        InfluxToken: localStorage.getItem('influx_token'),
+        InfluxOrg: localStorage.getItem('influx_org'),
+      },
+    })
     .then((result) => {
       console.log('delete graph success:', result)
       fetchGraphs(setGraphs, setError)
@@ -161,14 +264,21 @@ const deleteGraph = (id, setGraphs, setError) => {
     })
 }
 
-const downloadExcel = async (sql) => {
+const downloadExcel = async (sql, setError) => {
+  if (!allExists(['token', 'user', 'influx_token', 'influx_org'])) {
+    setError('InfluxDB headers are not set.')
+    return
+  }
   try {
     // 使用 axios 发送 GET 请求，追加新的 headers 而不覆盖现有 headers
     const response = await axios.get(`/api/influx/download/excel`, {
       params: { sql: sql },
       responseType: 'blob', // 处理为二进制大对象
       headers: {
-        ...axios.defaults.headers.common, // 保留已存在的 headers
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        User: localStorage.getItem('user'),
+        InfluxToken: localStorage.getItem('influx_token'),
+        InfluxOrg: localStorage.getItem('influx_org'),
         'Content-Type': 'application/json',
       },
     })
@@ -186,14 +296,21 @@ const downloadExcel = async (sql) => {
   }
 }
 
-const downloadCSV = async (sql) => {
+const downloadCSV = async (sql, setError) => {
+  if (!allExists(['token', 'user', 'influx_token', 'influx_org'])) {
+    setError('InfluxDB headers are not set.')
+    return
+  }
   try {
     // 使用 axios 发送 GET 请求，追加新的 headers 而不覆盖现有 headers
     const response = await axios.get(`/api/influx/download/csv`, {
       params: { sql: sql },
       responseType: 'blob', // 处理为二进制大对象
       headers: {
-        ...axios.defaults.headers.common, // 保留已存在的 headers
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        User: localStorage.getItem('user'),
+        InfluxToken: localStorage.getItem('influx_token'),
+        InfluxOrg: localStorage.getItem('influx_org'),
         'Content-Type': 'application/json',
       },
     })
@@ -211,14 +328,21 @@ const downloadCSV = async (sql) => {
   }
 }
 
-const downloadTXT = async (sql) => {
+const downloadTXT = async (sql, setError) => {
+  if (!allExists(['token', 'user', 'influx_token', 'influx_org'])) {
+    setError('InfluxDB headers are not set.')
+    return
+  }
   try {
     // 使用 axios 发送 GET 请求，追加新的 headers 而不覆盖现有 headers
     const response = await axios.get(`/api/influx/download/txt`, {
       params: { sql: sql },
       responseType: 'blob', // 处理为二进制大对象
       headers: {
-        ...axios.defaults.headers.common, // 保留已存在的 headers
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        User: localStorage.getItem('user'),
+        InfluxToken: localStorage.getItem('influx_token'),
+        InfluxOrg: localStorage.getItem('influx_org'),
         'Content-Type': 'application/json',
       },
     })

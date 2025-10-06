@@ -15,7 +15,7 @@ function useFields({ bucket, measurement }) {
   const FieldsDom = (
     <div className="w-full">
       <h2 className="">Fields:</h2>
-      <div className="flex items-center flex-col">
+      <div className="flex items-center ">
         {fields.map((f, index) => (
           <FieldDom key={`field-${index}`} field={f} />
         ))}

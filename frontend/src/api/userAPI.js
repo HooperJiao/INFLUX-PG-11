@@ -45,7 +45,7 @@ const login = (username, password, setToken, setUser, redirect, setError) => {
 }
 
 const logout = (setToken, redirect) => {
-  setToken()
+  setToken('')
   redirect()
 }
 

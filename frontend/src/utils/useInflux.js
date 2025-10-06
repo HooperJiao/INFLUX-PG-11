@@ -17,11 +17,6 @@ function useBuckets(setError) {
     _fetchBuckets(__setBuckets, setError)
   }
 
-  // // fetch data
-  // useEffect(() => {
-  //     fetchBuckets()
-  // }, [])
-
   return { buckets, fetchBuckets }
 }
 

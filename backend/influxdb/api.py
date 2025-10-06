@@ -38,6 +38,9 @@ def get_buckets(request):
     if influx_token is None or influx_org is None:
         return HttpResponse("InfluxToken or InfluxOrg not found in request headers.", status=400)
     
+
+    print(influx_token, influx_org)
+
     influx = influxdb_client.InfluxDBClient(url=url, token=influx_token, org=influx_org)
 
     buckets = influx.buckets_api().find_buckets().buckets
@@ -110,16 +113,14 @@ def get_fields(request, bucket: str, measurement: str):
         |> sort()"""
     tables = influx.query_api().query(query)
     for table in tables:
-        print(table.columns)
-        for column in table.records:
+        for column in table.columns:
             result.append({
                 'bucket': bucket,
                 'measurement': measurement,
-                'data_type': 'string',
+                'data_type': column.data_type,
                 'name': ''
             })
         for index in range(len(table.records)):
-            print(table.records[index])
             result[index]['name'] = table.records[index]['_value']
     return result
 

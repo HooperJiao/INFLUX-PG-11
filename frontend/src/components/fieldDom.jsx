@@ -12,9 +12,9 @@ export const FieldDom = ({ field }) => {
     <>
       <div
         ref={drag}
-        className={`flex items-center bg-gray-50 rounded-3xl py-2 px-2 hover:bg-sky-500 hover:text-white`}
+        className={`flex items-center bg-gray-50 rounded py-2 px-2 hover:bg-blue-500 hover:text-white`}
       >
-        {/* <span className='p-0.5 text-sm bg-sky-300 text-white rounded-2xl mr-2'>
+        {/* <span className='p-0.5 text-sm bg-blue-300 text-white rounded-2xl mr-2'>
         {field.data_type}
       </span> */}
         {field.name}
