@@ -7,10 +7,10 @@ from .models import UserDashboard
 
 
 host = "http://localhost:3000"
-datasource_name = "InfluxDB-m418"
+datasource_name = "InfluxDB"
 headers = {
     'Content-type': 'application/json',
-    'Authorization': 'Bearer glsa_q5V5U6avupwpr6mGVYQQ9hyNRH9kDu2u_22621679'
+    'Authorization': 'Bearer glsa_Ncd6Oh7CO1zuuQknRZNhIFexaTM2fuTT_bee5db8a'
 }
 
 def try_get(model, **kwargs):

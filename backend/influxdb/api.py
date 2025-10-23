@@ -22,8 +22,8 @@ from .utils import try_get, prepare, delete_graph, update_default_graph, create_
 router = Router()
 
 url = "http://localhost:8086"
-# token = 'rpwltWdF4uP9xd8nthBy7gqMx9E_liRyzEhFxpuSJTNyigyNOa9MXokNxKLKdrFvFv839y7C-ojmTLUwsbkcNQ=='
-# org = "atsys"
+# token = '1VuKVunyaVg4bFFRfRbpE5C5LwD8sclg3UMBUROWwLHG2-BHkIL7YYjQVQVF8yFgTmzM7f9Hnd_iuqiSdEwFtQ=='
+# org = "University of Adelaide"
 
 @router.get('/bucket')
 def get_buckets(request):
