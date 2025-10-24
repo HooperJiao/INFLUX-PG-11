@@ -8,10 +8,12 @@ function useGraph() {
   const [graphType, setGraphType] = useState('timeseries')
   const [limit, setLimit] = useState(-1)
   const [query, setQuery] = useState('')
-  const [title, setTitle] = useState('New Graph ' + new Date())
+  const [title, setTitle] = useState('Unnamed')
   const [shareURL, setShareURL] = useState('')
 
   const fetchQuery = ({ sql, _startTime, _endTime, _limit, setError }) => {
+    console.log('fetchQuery...', sql, _startTime, _endTime, _limit)
+
     setShareURL('')
     queryGraph(sql, graphType, setShareURL, setError)
     setQuery(sql)
@@ -47,63 +49,65 @@ function useGraph() {
         ''
       ) : (
         <div>
-          <div className="flex items-center space-x-2 justify-between mb-2">
-            <div className="flex items-center space-x-2">
-              <label htmlFor="graph-type">Graph Type</label>
-              <select
-                className="border border-gray-500 rounded-xl p-2"
-                name="graph-type"
-                id="graph-type"
-                value={graphType}
-                onChange={(e) => setGraphType(e.target.value)}
+          <div className="flex justify-between space-x-2">
+            <div className="flex items-center space-x-2 justify-between mb-2">
+              <div className="flex items-center space-x-2">
+                <label htmlFor="graph-type">Graph Type</label>
+                <select
+                  className="border border-gray-200 rounded-xl p-2"
+                  name="graph-type"
+                  id="graph-type"
+                  value={graphType}
+                  onChange={(e) => setGraphType(e.target.value)}
+                >
+                  <option value="timeseries">Time series</option>
+                  <option value="barchart">Bar chart</option>
+                  <option value="piechart">Pie Chart</option>
+                </select>
+              </div>
+              <button
+                className="mb-2"
+                onClick={() =>
+                  fetchQuery({
+                    sql: query,
+                    _startTime: startTime,
+                    _endTime: endTime,
+                    _limit: SQLLimit,
+                    setError: setError,
+                  })
+                }
               >
-                <option value="timeseries">Time series</option>
-                <option value="barchart">Bar chart</option>
-                <option value="piechart">Pie Chart</option>
-              </select>
+                Apply Graph Type
+              </button>
             </div>
-            <button
-              className="mb-2"
-              onClick={() =>
-                fetchQuery({
-                  sql: query,
-                  _startTime: startTime,
-                  _endTime: endTime,
-                  _limit: SQLLimit,
-                  setError: setError,
-                })
-              }
-            >
-              Save
-            </button>
-          </div>
 
-          <div className="flex items-center space-x-2 justify-between mb-2">
-            <div className="flex items-center space-x-2">
-              <label htmlFor="new-graph-title">Title: </label>
-              <input
-                className="w-96 border border-gray-500 rounded-xl p-2 "
-                id="new-graph-title"
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
+            <div className="flex items-center space-x-2 justify-between mb-2">
+              <div className="flex items-center space-x-2">
+                <label htmlFor="new-graph-title">Title: </label>
+                <input
+                  className="w-96 border border-gray-200 rounded-xl p-2 "
+                  id="new-graph-title"
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+              </div>
+              <div className="flex items-center space-x-2">
+                <label htmlFor="graph-limit">Limit</label>
+                <select
+                  className="border border-gray-200 rounded-xl p-2"
+                  name="graph-Limit"
+                  id="graph-limit"
+                  value={(e) => setLimit(e.target.value)}
+                >
+                  <option value="-1">-1(No Limit)</option>
+                  <option value={SQLLimit}>{SQLLimit}(The same as SQL)</option>
+                </select>
+              </div>
+              <button className="mb-2" onClick={() => saveGraph()}>
+                Save To Grafana
+              </button>
             </div>
-            <div className="flex items-center space-x-2">
-              <label htmlFor="graph-limit">Limit</label>
-              <select
-                className="border border-gray-500 rounded-xl p-2"
-                name="graph-Limit"
-                id="graph-limit"
-                value={(e) => setLimit(e.target.value)}
-              >
-                <option value="-1">-1(No Limit)</option>
-                <option value={SQLLimit}>{SQLLimit}(The same as SQL)</option>
-              </select>
-            </div>
-            <button className="mb-2" onClick={() => saveGraph()}>
-              Save
-            </button>
           </div>
           <iframe
             id="iframe-graph"

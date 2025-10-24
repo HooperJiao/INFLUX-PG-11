@@ -12,19 +12,22 @@ import { TableDom } from '@components/tableDom'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { flushSync } from 'react-dom'
-import Tab from '../../components/tab'
 import useBuckets from './BuckectsDom'
 import useMeasurements from './measurementsDom'
 import useFields from './fieldsDom'
 import useGraph from './GraphDom'
 
-import History from './History'
 import SQLTexture from './SQLTexture'
+import { GraphBoard } from './GraphBoard'
 
 function Dashboard() {
   const [error, setError] = useState('')
-  const [inputInfluxToken, setInputInfluxToken] = useState('')
-  const [inputInfluxOrg, setInputInfluxOrg] = useState('')
+  const [inputInfluxToken, setInputInfluxToken] = useState(
+    localStorage.getItem('influx_token')
+  )
+  const [inputInfluxOrg, setInputInfluxOrg] = useState(
+    localStorage.getItem('influx_org')
+  )
   const [selectBucket, setSelectBucket] = useState('')
   const [selectMeasurement, setSelectMeasurement] = useState('')
   const [selectFields, setSelectFields] = useState([])
@@ -37,14 +40,7 @@ function Dashboard() {
 
   const [limit, setLimit] = useState('')
 
-  const {
-    user,
-    setToken,
-    influxToken,
-    setInfluxToken,
-    influxOrg,
-    setInfluxOrg,
-  } = useAuth()
+  const { user, setToken, setInfluxToken, setInfluxOrg } = useAuth()
   const navigate = useNavigate()
   const { BucketsDom, buckets, fetchBuckets } = useBuckets({
     bucket: selectBucket,
@@ -272,29 +268,6 @@ function Dashboard() {
 
   const sql = genSQL(selectFields, filterFields)
 
-  const sqlTextare = <textarea className="" defaultValue={sql}></textarea>
-
-  const dataTable = <TableDom data={tableData} sql={sql} />
-
-  const tabData = [
-    { title: 'SQL', content: sqlTextare },
-    { title: 'Table', content: dataTable },
-    // { title: 'Graph', content: graphDom },
-    // { title: 'Saved List', content: <History /> },
-  ]
-
-  function handleQuery() {
-    console.log('start query...')
-    doQuery(sql, setTableData, setError)
-    // fetchGraph({
-    //   sql,
-    //   _startTime: startTime,
-    //   _endTime: endTime,
-    //   _limit: limit,
-    //   setError: setError,
-    // })
-  }
-
   return (
     <>
       <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -477,6 +450,10 @@ function Dashboard() {
             {/* Show Table: */}
             <TableDom data={tableData} sql={sql} />
             {/* Show Table: */}
+
+            {/* Show Graph */}
+            <GraphBoard graphDom={graphDom} />
+            {/* Show Graph */}
           </div>
         </DndProvider>
       </div>

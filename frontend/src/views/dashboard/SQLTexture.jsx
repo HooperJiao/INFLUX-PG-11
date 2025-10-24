@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 
 function SQLTexture({ selectFields, filterFields, startTime, endTime, limit }) {
+  const [open, setOpen] = useState(true)
   const makeFluxSQL = (fields, filters, startTime, endTime, limit) => {
     if (fields.length == 0) {
       return ''
@@ -71,26 +72,46 @@ function SQLTexture({ selectFields, filterFields, startTime, endTime, limit }) {
   const [sql, setSql] = useState('')
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-6 mb-8">
-      <div className="flex flex-wrap gap-4 items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-800">Flux SQL</h2>
+    <>
+      {open ? (
+        <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+          <div className="flex flex-wrap gap-4 items-center justify-between">
+            <div className="flex w-full items-center justify-between">
+              <h2 className="text-2xl font-bold text-gray-800">Flux SQL</h2>
+              <button onClick={() => setOpen(false)}>Hide</button>
+            </div>
 
-        <textarea
-          className="w-full min-h-96 border border-gray-500 rounded p-4"
-          defaultValue={sql}
-        ></textarea>
-        <button
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-          onClick={() => {
-            setSql(
-              makeFluxSQL(selectFields, filterFields, startTime, endTime, limit)
-            )
-          }}
-        >
-          Generate Flux SQL
-        </button>
-      </div>
-    </div>
+            <textarea
+              className="w-full min-h-96 border border-gray-500 rounded p-4"
+              defaultValue={sql}
+            ></textarea>
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+              onClick={() => {
+                setSql(
+                  makeFluxSQL(
+                    selectFields,
+                    filterFields,
+                    startTime,
+                    endTime,
+                    limit
+                  )
+                )
+              }}
+            >
+              Generate Flux SQL
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+          <div className="flex flex-wrap gap-4 items-center justify-between">
+            <h2 className="text-2xl font-bold text-gray-800">Flux SQL</h2>
+            <button onClick={() => setOpen(true)}>Expand</button>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
 
