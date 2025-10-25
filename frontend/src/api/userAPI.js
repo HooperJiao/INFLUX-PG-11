@@ -14,7 +14,9 @@ const login = (username, password, setToken, setUser, redirect, setError) => {
       flushSync(() => {
         setToken(data.access)
       })
+      localStorage.setItem('token', data.access) // set token
       console.log('login result:', result, data.access)
+      axios.defaults.headers.common['Authorization'] = `Bearer ${data.access}`
       axios
         .get('/api/user/info')
         .then((result) => {
@@ -22,6 +24,7 @@ const login = (username, password, setToken, setUser, redirect, setError) => {
           flushSync(() => {
             setUser(result.data)
           })
+          console.log('login success, redirect')
           redirect()
         })
         .catch((e) => {
